@@ -1,5 +1,5 @@
-use serde::Deserialize;
-use std::collections::HashMap;
+// use serde::Deserialize;
+// use std::collections::HashMap;
 
 /// A representation of the Bible in JSON format.
 ///
@@ -7,28 +7,46 @@ use std::collections::HashMap;
 /// ```json
 /// {
 /// "bookName": {
-///   "chapter" : {
 ///     "chapterNumber": {
-///       "verse": {
 ///         "verseNumber": "passageString",
 ///       }
-///     }
 ///   }
 /// }
 /// ```
 
-#[derive(Debug, Deserialize)]
+// #[derive(Debug, Deserialize)]
+// pub struct Bible {
+//     #[serde(flatten)]
+//     pub books: HashMap<String, Book>,
+// }
+
+// #[derive(Debug, Deserialize)]
+// pub struct Book {
+//     pub chapter: HashMap<String, Chapter>,
+// }
+
+// #[derive(Debug, Deserialize)]
+// pub struct Chapter {
+//     pub verse: HashMap<String, String>,
+// }
+
+use std::collections::HashMap;
+use serde::Deserialize;
+
+#[derive(Deserialize, Debug)]
 pub struct Bible {
     #[serde(flatten)]
     pub books: HashMap<String, Book>,
 }
 
-#[derive(Debug, Deserialize)]
+#[derive(Deserialize, Debug)]
 pub struct Book {
-    pub chapter: HashMap<String, Chapter>,
+    #[serde(flatten)]
+    pub chapters: HashMap<String, Chapter>,
 }
 
-#[derive(Debug, Deserialize)]
+#[derive(Deserialize, Debug)]
 pub struct Chapter {
-    pub verse: HashMap<String, String>,
+    #[serde(flatten)]
+    pub verses: HashMap<String, String>,
 }

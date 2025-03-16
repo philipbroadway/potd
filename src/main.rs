@@ -9,9 +9,9 @@ fn main() {
 
   let args: Vec<String> = env::args().collect();
 
-  if args.len() > 0 {
+  if args.len() != 5 {
       eprintln!("------------------\nPassage of the day\n------------------");
-      eprintln!("\nOptions:\n{} -s <book> <chapter> <verse>", args[0]);
+      eprintln!("\nU{} -s <book> <chapter> <verse>", args[0]);
       eprintln!("{} -q \"book chapter:verse[,-s]\"\n", args[0]);
       return;
   }
@@ -24,9 +24,10 @@ fn main() {
 
   let bible_json = include_str!("data/bible.json");
   let bible: Bible = serde_json::from_str(bible_json).expect("Failed to parse JSON");
+  // println!("{:#?}", bible);
 
   match find_verse(&bible, book, chapter, verse) {
     Some(verse_text) => println!("{}", verse_text),
     None => println!("{} {}:{} not found.", book, chapter, verse),
   }
-}
+} 
