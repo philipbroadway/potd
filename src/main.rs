@@ -13,7 +13,9 @@ fn main() {
       eprintln!("Usage: {} <book> <chapter> <verse>", args[0]);
       return;
   }
-  //TODO: Setup CLI flags for different query options
+  
+  //TODO: Setup CLI flags for different query options.
+
   let book = &args[1].to_lowercase().replace(" ", "-");
   let chapter = &args[2];
   let verse = &args[3];
