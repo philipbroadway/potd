@@ -1,5 +1,5 @@
 mod bible;
-// mod search;
+mod search;
 
 use std::fs;
 use bible::Bible;
