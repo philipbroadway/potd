@@ -12,8 +12,7 @@ fn main() {
   let args: Vec<String> = env::args().collect();
 
   if args.len() <= 1 {
-      eprintln!("------------------\nPassage of the day\n------------------");
-      eprintln!("\nU{} -s <book> <chapter> <verse>", args[0]);
+      eprintln!("\nUsage:\n{} -s <book> <chapter> <verse>", args[0]);
       eprintln!("{} -q \"book chapter:verse[,-s]\"\n", args[0]);
       return;
   }
