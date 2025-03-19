@@ -8,3 +8,7 @@
 patina -q "Romans 8:28"
 # We know that all things work together for good for those who love God, for those who are called according to his purpose.
 ```
+
+## Examples
+
+* [Simple Server](example/README.md)
