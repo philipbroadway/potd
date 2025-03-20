@@ -2,58 +2,39 @@ mod bible;
 mod search;
 mod utils;
 
-use std::env;
 use bible::Bible;
-use search::find_verse;
+use patina::Patina;
+use search::{SearchResult, search_by_reference};
+use std::env;
 use utils::kebob_to_title;
 
 fn main() {
-
-  let args: Vec<String> = env::args().collect();
-
-  if args.len() <= 1 {
-      eprintln!("\nUsage:\n{} -s <book> <chapter> <verse>", args[0]);
-      eprintln!("{} -q \"book chapter:verse[,-s]\"\n", args[0]);
-      return;
-  }
-
-  let bible_json = include_str!("data/bible.json");
-  let bible: Bible = serde_json::from_str(bible_json).expect("Failed to parse JSON");
-
-  if args[1] == "-s" {
-    let book = &args[2].to_lowercase().replace(" ", "-");
-    let chapter = &args[3];
-    let verse = &args[4];
-  
-    match find_verse(&bible, book, chapter, verse) {
-      Some(verse_text) => println!("{}", verse_text),
-      None => println!("{} {}:{} not found.", book, chapter, verse),
-    }
-    return;
-  } else if args[1] == "-q" {
-    let query = &args[2];
-    let query_parts: Vec<&str> = query.rsplitn(2, ' ').collect();
-    if query_parts.len() != 2 {
-        eprintln!("Invalid query format. Expected format: \"<book> <chapter:verse>\"");
+    let args: Vec<String> = env::args().collect();
+    if args.len() <= 1 {
+        eprintln!("\nUsage:\n{} -s <book> [chapter] [verse]", args[0]);
+        eprintln!("{} -q \"book chapter:verse\"\n", args[0]);
         return;
     }
-
-    let chapter_verse = query_parts[0];
-    let book = query_parts[1].to_lowercase().replace(" ", "-");
-
-    let chapter_verse_parts: Vec<&str> = chapter_verse.split(':').collect();
-    if chapter_verse_parts.len() != 2 {
-        eprintln!("Invalid chapter:verse format. Expected format: \"<chapter:verse>\"");
-        return;
+    let patina = Patina::new();
+    if args[1] == "-s" {
+        let book = &args[2].to_lowercase().replace(" ", "-");
+        let chapter = if args.len() > 3 {
+            Some(args[3].parse::<u32>().ok().unwrap())
+        } else {
+            None
+        };
+        let verse = if args.len() > 4 {
+            Some(args[4].parse::<u32>().ok().unwrap())
+        } else {
+            None
+        };
+        if let Some(result) = patina.search_by_reference(book, chapter, verse) {
+            println!("{}", result);
+        }
+    } else if args[1] == "-q" {
+        let query = &args[2];
+        if let Some(result) = patina.search_by_text(query) {
+            println!("{}", result);
+        }
     }
-
-    let chapter = chapter_verse_parts[0];
-    let verse = chapter_verse_parts[1];
-
-    match find_verse(&bible, &book, chapter, verse) {
-        Some(verse_text) => println!("{}", verse_text),
-        None => println!("{} {}:{} not found.", kebob_to_title(&book), chapter, verse),
-    }
-    return; 
-  }
-} 
+}
